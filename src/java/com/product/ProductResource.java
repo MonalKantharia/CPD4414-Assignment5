@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 import javax.json.stream.JsonParser;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -31,6 +33,7 @@ import org.json.simple.JSONArray;
  *
  * @author Monal
  */
+@Path("Product")
 public class ProductResource {
     productConnection con=new productConnection();
     Connection conn=null;
@@ -63,12 +66,12 @@ public class ProductResource {
            String result="";
            JSONArray productArr = new JSONArray();
            while (rs.next()) {
-                Map productMap = new LinkedHashMap();
-                productMap.put("productID", rs.getInt("product_id"));
-                productMap.put("name", rs.getString("name"));
-                productMap.put("description", rs.getString("description"));
-                productMap.put("quantity", rs.getInt("quantity"));
-                productArr.add(productMap);
+                JsonObjectBuilder prodMap = Json.createObjectBuilder();
+                prodMap.add("productID", rs.getInt("product_id"));
+                prodMap.add("name", rs.getString("name"));
+                prodMap.add("description", rs.getString("description"));
+                prodMap.add("quantity", rs.getInt("quantity"));
+                productArr.add(prodMap);
            }
             result = productArr.toString();
           return  result.replace("},", "},\n");
@@ -91,16 +94,16 @@ public class ProductResource {
            pstmt.setInt(1,id);
            ResultSet rs = pstmt.executeQuery();
            String result="";
-           JSONArray productArr = new JSONArray();
+           JsonArrayBuilder productArr = Json.createArrayBuilder();
            while (rs.next()) {
-                 Map productMap = new LinkedHashMap();
-                productMap.put("productID", rs.getInt("product_id"));
-                productMap.put("name", rs.getString("name"));
-                productMap.put("description", rs.getString("description"));
-                productMap.put("quantity", rs.getInt("quantity"));
-                productArr.add(productMap);
+                 JsonObjectBuilder prodMap = Json.createObjectBuilder();
+                prodMap.add("productID", rs.getInt("product_id"));
+                prodMap.add("name", rs.getString("name"));
+                prodMap.add("description", rs.getString("description"));
+                prodMap.add("quantity", rs.getInt("quantity"));
+                productArr.add(prodMap);
            }    
-                result = productArr.toString();
+                result = productArr.build().toString();
                 
                  return result;
       }
